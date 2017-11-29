@@ -10,21 +10,16 @@ function run() {
 		//when user calls for their tweets
 		case "my-tweets":
 			//make api call to twitter using the twitter client keys
-			client.twitter.get('statuses/user_timeline', function(error, tweets, response) {
+			client.twitter.get('statuses/user_timeline', 'count: 20', function(error, tweets, response) {
 				if (error) {
 					return console.log(error);
 				}
 				//print tweets along with timestamp for the last 20 user tweets
 				console.log("Your Tweets ------------------------")
 				for (i=0; i < tweets.length; i++) {
-					//check to make sure 20 tweets have not already been posted
-					if (i > 20) {
-						return; //if the loop has run more than 20 times, break the loop
-					} else {
 						//print tweet
 						console.log('%s', `On ${tweets[i].created_at} you tweeted ${tweets[i].text}`);
 					}
-				}
 				console.log("------------------------")
 			});
 
