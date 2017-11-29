@@ -2,6 +2,7 @@
 var client = require("./keys.js");
 var moment = require("moment");
 var request = require('request');
+var fs = require('fs');
 
 function run() {
 	//command switch statment
@@ -54,14 +55,14 @@ function run() {
 				console.log("------------------------");
 			});
 			break;
-		case "movie-this":
-			var movieUrL = `http://www.omdbapi.com/?t=${search}&y=&plot=short&apikey=40e9cece`;
+		case "movie-this": //If command is "movie-this"
+			var movieUrL = `http://www.omdbapi.com/?t=${search}&y=&plot=short&apikey=40e9cece`; //add searched movie to URL
 			if (search == "") {
-				return console.log("Please type a movie or tv show");
+				return console.log("Please type a movie or tv show"); //if there is an empty string ask for a movie or TV show
 			}
 			request(movieUrL, function(error, response, body) {
-				if (!error && response.statusCode === 200) {
-					body = JSON.parse(body);
+				if (!error && response.statusCode === 200) { //if connection is successful...
+					body = JSON.parse(body); // JSON parse the body and print information
 					console.log("Movie information ------------------------");
 					console.log(`Title: ${body.Title}`);
 					console.log(`IMDB Rating: ${body.imdbRating}`);
@@ -71,13 +72,12 @@ function run() {
 					console.log(`Plot: ${body.Plot}`);
 					console.log(`Actors: ${body.Actors}`);
 					console.log("------------------------")
-
 				}
 
 			});
 		break;
 		default:
-		console.log("command not recognized");
+			console.log("command not recognized");
 		break;
 	}
 
@@ -86,6 +86,15 @@ function run() {
 
 //take in command line inputs
 var command = process.argv[2];
-var search = process.argv.slice(3).join(" ");
-
-run();
+//if command is do-what-it-says...
+if (command === 'do-what-it-says') {
+	fs.readFile('./random.txt', "utf8", function(err, data) { //read random.txt file
+		var randomCommands = data.split(","); //split data at the comma
+		command = randomCommands[0]; //set each part of the array to their respective command and search variables
+		search = randomCommands[1];
+		run(); //run application
+	});
+} else {
+	var search = process.argv.slice(3).join(" "); //take second argument 
+	run(); //run application
+}
